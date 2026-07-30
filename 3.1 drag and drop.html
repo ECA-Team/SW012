@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Goal, Activity or Evidence?</title>
+  <style>
+    :root{--cream:#f5f6f1;--paper:#fffdfa;--ink:#272724;--muted:#68675f;--terracotta:#c95d35;--ochre:#ce8b20;--sage:#7a8c5c;--teal:#5f8f8d;--brown:#7a4721;--line:#ddd8cb}
+    *{box-sizing:border-box}
+    body{margin:0;background:radial-gradient(circle at 8% 5%,#c95d3514,transparent 24rem),radial-gradient(circle at 92% 4%,#5f8f8d18,transparent 25rem),var(--cream);color:var(--ink);font-family:Arial,Helvetica,sans-serif}
+    button{font:inherit}
+    button:focus-visible{outline:3px solid #146eaa;outline-offset:3px}
+    main{min-height:100vh;padding:clamp(16px,3vw,40px)}
+    .shell{width:min(1180px,100%);margin:auto}
+    header{max-width:800px;margin-bottom:28px}
+    .eyebrow{display:inline-block;margin-bottom:10px;color:var(--terracotta);font-size:12px;font-weight:800;letter-spacing:.16em;text-transform:uppercase}
+    h1{margin:0 0 12px;font-size:clamp(32px,5vw,58px);line-height:1.03;letter-spacing:-.04em}
+    header p{margin:0;color:var(--muted);font-size:clamp(16px,2vw,18px);line-height:1.6}
+    .panel{margin-bottom:22px;padding:clamp(16px,2.5vw,26px);border:1px solid var(--line);border-radius:28px;background:#fffdfae8;box-shadow:0 15px 45px #4f453312}
+    .panel-head,.panel-head>div{display:flex;align-items:center}
+    .panel-head{justify-content:space-between;gap:16px;margin-bottom:20px}
+    .panel-head h2{margin:0 0 3px;font-size:19px}
+    .panel-head p{margin:0;color:var(--muted);font-size:14px}
+    .step{display:grid;flex:0 0 auto;width:36px;height:36px;margin-right:12px;border-radius:50%;background:var(--ink);color:#fff;font-weight:800;place-items:center}
+    .reset{border:0;background:transparent;color:var(--brown);cursor:pointer;font-size:14px;font-weight:700;text-decoration:underline;text-underline-offset:3px}
+    .cards{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px}
+    .card{position:relative;display:flex;min-height:126px;align-items:flex-start;gap:10px;padding:16px 30px 16px 14px;border:1px solid #d8d1c3;border-radius:16px;background:#fff;color:var(--ink);cursor:grab;text-align:left;line-height:1.42;box-shadow:0 5px 15px #4b3d290f;transition:.15s}
+    .card:hover{transform:translateY(-3px);border-color:var(--terracotta)}
+    .card.selected{border:2px solid var(--terracotta);background:#fff7f1;box-shadow:0 0 0 4px #c95d351f}
+    .num{display:grid;flex:0 0 auto;width:28px;height:28px;border-radius:50%;background:var(--ink);color:#fff;font-size:13px;font-weight:800;place-items:center}
+    .grip{position:absolute;top:12px;right:12px;color:#a49d91;font-size:18px}
+    .empty{grid-column:1/-1;margin:0;padding:22px;border:1px dashed #b9b09f;border-radius:16px;color:var(--muted);text-align:center}
+    .zones{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+    .zone{min-height:260px;overflow:hidden;border:2px solid;border-radius:22px;background:var(--paper);transition:.15s}
+    .zone.goal{border-color:var(--terracotta)}.zone.activity{border-color:var(--ochre)}.zone.evidence{border-color:var(--teal)}
+    .zone.dragover{transform:translateY(-3px);box-shadow:0 0 0 5px #7a8c5c22}
+    .zone-title{display:flex;width:100%;align-items:center;gap:12px;padding:16px;border:0;color:var(--ink);cursor:pointer;text-align:left}
+    .goal .zone-title{background:#fae8df}.activity .zone-title{background:#f8edda}.evidence .zone-title{background:#deeceb}
+    .icon{display:grid;width:40px;height:40px;border:2px solid currentColor;border-radius:50%;font-size:20px;font-weight:800;place-items:center}
+    .goal .icon{color:var(--terracotta)}.activity .icon{color:var(--ochre)}.evidence .icon{color:var(--teal)}
+    .zone-title strong,.zone-title small{display:block}.zone-title strong{margin-bottom:3px;font-size:18px}.zone-title small{color:var(--muted);font-size:12px}
+    .placed{display:flex;min-height:174px;flex-direction:column;gap:10px;padding:13px}
+    .hint{margin:auto;padding:16px;color:#858075;font-size:14px;text-align:center}
+    .placed-card{position:relative;display:flex;align-items:flex-start;gap:10px;padding:12px 36px 12px 11px;border:1px solid #d8d1c3;border-radius:14px;background:#fff;font-size:13px;line-height:1.4}
+    .placed-card.correct{border-color:#5e824b;background:#eef6e9}.placed-card.incorrect{border-color:#b64836;background:#fff0ed}
+    .remove{position:absolute;top:7px;right:8px;width:26px;height:26px;border:0;border-radius:50%;background:transparent;color:#777268;cursor:pointer;font-size:20px}
+    .remove:hover{background:#eee9df;color:var(--ink)}
+    .result{display:grid;flex:0 0 auto;width:22px;height:22px;margin-left:auto;border-radius:50%;background:var(--ink);color:#fff;font-size:12px;font-weight:900;place-items:center}
+    footer{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:18px 20px;border:1px solid var(--line);border-radius:22px;background:var(--paper);box-shadow:0 12px 35px #4f45330f}
+    .feedback{color:var(--muted);font-size:14px;line-height:1.45}.feedback p,.feedback strong{margin:0}.feedback strong{display:block;margin-bottom:3px;color:var(--ink)}
+    .check{flex:0 0 auto;padding:13px 20px;border:0;border-radius:999px;background:var(--brown);color:#fff;cursor:pointer;font-weight:800;box-shadow:0 6px 14px #7a472133}.check:disabled{cursor:not-allowed;opacity:.4}
+    @media(max-width:920px){.cards{grid-template-columns:repeat(2,minmax(0,1fr))}.zones{grid-template-columns:1fr}.zone{min-height:185px}}
+    @media(max-width:560px){main{padding:16px}.cards{grid-template-columns:1fr}.card{min-height:auto}.panel-head,footer{align-items:flex-start;flex-direction:column}.check{width:100%}}
+    @media(prefers-reduced-motion:reduce){*{transition:none!important}}
+  </style>
+</head>
+<body>
+<main>
+  <div class="shell">
+    <header>
+      <span class="eyebrow">Learning agreement</span>
+      <h1>Goal, activity or evidence?</h1>
+      <p>Decide what each statement represents. Drag each card to a category, or select a card and then select a category.</p>
+    </header>
+
+    <section class="panel" aria-labelledby="statements-heading">
+      <div class="panel-head">
+        <div><span class="step">1</span><div><h2 id="statements-heading">Sort the statements</h2><p id="remaining">5 remaining</p></div></div>
+        <button class="reset" id="reset" type="button">Reset activity</button>
+      </div>
+      <div class="cards" id="bank" aria-live="polite"></div>
+    </section>
+
+    <section class="panel" aria-labelledby="categories-heading">
+      <div class="panel-head">
+        <div><span class="step">2</span><div><h2 id="categories-heading">Choose a category</h2><p>Each category can hold more than one statement.</p></div></div>
+      </div>
+      <div class="zones" id="zones"></div>
+    </section>
+
+    <footer>
+      <div class="feedback" id="feedback" aria-live="polite"><p>Place all five statements, then check your answers.</p></div>
+      <button class="check" id="check" type="button" disabled>Check answers</button>
+    </footer>
+  </div>
+</main>
+<script>
+  const statements=[
+    {id:1,text:"Develop confidence in communicating with service users.",answer:"goal"},
+    {id:2,text:"Observe an intake interview and discuss the communication strategies used.",answer:"activity"},
+    {id:3,text:"Field Educator’s observation feedback and a reflective journal entry.",answer:"evidence"},
+    {id:4,text:"Improve my understanding of the agency’s approach to risk.",answer:"goal"},
+    {id:5,text:"Review the agency risk procedure and apply it to a de-identified scenario.",answer:"activity"}
+  ];
+  const categories=[
+    {id:"goal",label:"Goal",prompt:"What do I need to develop?",icon:"◎"},
+    {id:"activity",label:"Activity",prompt:"What will I do to develop it?",icon:"✓"},
+    {id:"evidence",label:"Evidence",prompt:"How will I demonstrate my learning?",icon:"▤"}
+  ];
+  let placements={},selected=null,checked=false,dragged=null;
+  const bank=document.getElementById("bank"),zones=document.getElementById("zones"),remaining=document.getElementById("remaining"),feedback=document.getElementById("feedback"),check=document.getElementById("check");
+
+  function place(id,category){placements[id]=category;selected=null;checked=false;render()}
+  function unplace(id){delete placements[id];checked=false;render()}
+
+  function render(){
+    const unplaced=statements.filter(s=>!placements[s.id]);
+    remaining.textContent=`${unplaced.length} remaining`;
+    bank.innerHTML="";
+    if(!unplaced.length){bank.innerHTML='<p class="empty">All statements have been placed.</p>'}
+    unplaced.forEach(s=>{
+      const b=document.createElement("button");
+      b.type="button";b.className="card"+(selected===s.id?" selected":"");b.draggable=true;b.setAttribute("aria-pressed",selected===s.id);
+      b.innerHTML=`<span class="num">${s.id}</span><span>${s.text}</span><span class="grip" aria-hidden="true">⠿</span>`;
+      b.onclick=()=>{selected=selected===s.id?null:s.id;render()};
+      b.ondragstart=e=>{dragged=s.id;e.dataTransfer.setData("text/plain",s.id)};
+      b.ondragend=()=>{dragged=null;document.querySelectorAll(".zone").forEach(z=>z.classList.remove("dragover"))};
+      bank.appendChild(b);
+    });
+
+    zones.innerHTML="";
+    categories.forEach(c=>{
+      const zone=document.createElement("section");zone.className=`zone ${c.id}`;zone.setAttribute("aria-label",`${c.label} drop zone`);
+      const title=document.createElement("button");title.type="button";title.className="zone-title";
+      title.setAttribute("aria-label",selected?`Place selected statement in ${c.label}`:c.label);
+      title.innerHTML=`<span class="icon" aria-hidden="true">${c.icon}</span><span><strong>${c.label}</strong><small>${c.prompt}</small></span>`;
+      title.onclick=()=>{if(selected)place(selected,c.id)};
+      const list=document.createElement("div");list.className="placed";
+      const items=statements.filter(s=>placements[s.id]===c.id);
+      if(!items.length)list.innerHTML=`<p class="hint">${selected?`Select to place statement ${selected}`:"Drop a statement here"}</p>`;
+      items.forEach(s=>{
+        const correct=placements[s.id]===s.answer;
+        const card=document.createElement("div");card.className=`placed-card${checked?(correct?" correct":" incorrect"):""}`;
+        card.innerHTML=`<span class="num">${s.id}</span><span>${s.text}</span>${checked?`<span class="result" aria-label="${correct?"Correct":"Incorrect"}">${correct?"✓":"!"}</span>`:""}<button type="button" class="remove" aria-label="Return statement ${s.id} to the statement list">×</button>`;
+        card.querySelector(".remove").onclick=()=>unplace(s.id);list.appendChild(card);
+      });
+      zone.append(title,list);
+      zone.ondragover=e=>{e.preventDefault();zone.classList.add("dragover")};
+      zone.ondragleave=()=>zone.classList.remove("dragover");
+      zone.ondrop=e=>{e.preventDefault();zone.classList.remove("dragover");const id=Number(e.dataTransfer.getData("text/plain")||dragged);if(id)place(id,c.id)};
+      zones.appendChild(zone);
+    });
+    check.disabled=Object.keys(placements).length!==statements.length;
+    if(!checked)feedback.innerHTML="<p>Place all five statements, then check your answers.</p>";
+  }
+
+  check.onclick=()=>{
+    checked=true;
+    const score=statements.filter(s=>placements[s.id]===s.answer).length;
+    feedback.innerHTML=score===5
+      ?'<strong>Excellent work: 5 out of 5 correct.</strong><p>Goals describe development, activities are the actions you take and evidence demonstrates what you have learnt.</p>'
+      :`<strong>You have ${score} out of 5 correct.</strong><p>Review the cards marked with an exclamation point and try again.</p>`;
+    render();
+  };
+  document.getElementById("reset").onclick=()=>{placements={};selected=null;checked=false;dragged=null;render()};
+  render();
+</script>
+</body>
+</html>
