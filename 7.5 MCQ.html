@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Leah's professional decision points</title>
+  <style>
+    :root {
+      --cream:#f5f1e8; --paper:#fffdf8; --brown:#4e4038; --muted:#73665d;
+      --teal:#447c78; --teal-dark:#285e5a; --sage:#a9b79f; --ochre:#d2a34f;
+      --terracotta:#bd7158; --correct:#2f6b50; --incorrect:#a24436; --border:#d9cfc1;
+    }
+    * { box-sizing:border-box; }
+    body { margin:0; padding:clamp(12px,3vw,28px); background:var(--cream); color:var(--brown); font-family:Arial,Helvetica,sans-serif; line-height:1.5; }
+    .activity { width:min(950px,100%); margin:auto; overflow:hidden; background:var(--paper); border:1px solid var(--border); border-radius:18px; box-shadow:0 8px 24px rgba(78,64,56,.1); }
+    header { padding:20px clamp(18px,4vw,32px) 17px; border-top:9px solid var(--teal); border-bottom:1px solid var(--border); background:linear-gradient(110deg,#fffaf0,#edf2e9); }
+    h1 { margin:0 0 4px; font-size:clamp(1.35rem,3vw,1.9rem); line-height:1.2; }
+    header p { margin:0; color:var(--muted); }
+    .progress { display:flex; align-items:center; gap:9px; margin-top:13px; }
+    .step-dot { display:grid; place-items:center; width:30px; height:30px; border:2px solid var(--sage); border-radius:50%; background:#fff; font-weight:700; }
+    .step-dot.active { border-color:var(--teal); background:var(--teal); color:#fff; }
+    .step-dot.done { border-color:var(--correct); background:var(--correct); color:#fff; }
+    .line { width:44px; height:3px; background:var(--border); }
+    main { padding:clamp(16px,4vw,30px); }
+    .panel { display:none; }
+    .panel.active { display:block; animation:fade .25s ease; }
+    @keyframes fade { from { opacity:.25; transform:translateY(4px); } }
+    .eyebrow { display:inline-block; margin:0 0 8px; padding:4px 10px; border-radius:999px; background:#e5eee8; color:var(--teal-dark); font-size:.88rem; font-weight:700; text-transform:uppercase; letter-spacing:.04em; }
+    h2 { margin:0 0 16px; font-size:clamp(1.15rem,2.5vw,1.45rem); line-height:1.35; }
+    fieldset { margin:0; padding:0; border:0; }
+    legend { position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); }
+    .option { display:flex; gap:12px; align-items:flex-start; margin:9px 0; padding:12px 14px; border:2px solid var(--border); border-radius:10px; background:#faf7f0; cursor:pointer; }
+    .option:hover { border-color:var(--sage); background:#f5f5ea; }
+    .option:focus-within { outline:3px solid rgba(210,163,79,.48); outline-offset:2px; }
+    .option input { flex:0 0 auto; width:20px; height:20px; margin:2px 0 0; accent-color:var(--teal); }
+    .option.correct { border-color:var(--correct); background:#eaf4ec; }
+    .option.incorrect { border-color:var(--incorrect); background:#fff0eb; }
+    .letter { font-weight:700; color:var(--teal-dark); }
+    .actions { display:flex; flex-wrap:wrap; align-items:center; gap:10px; margin-top:17px; }
+    button { min-height:44px; padding:9px 18px; border:2px solid var(--teal-dark); border-radius:8px; font:inherit; font-weight:700; cursor:pointer; }
+    .primary { background:var(--teal); color:#fff; }
+    .primary:hover { background:var(--teal-dark); }
+    .secondary { background:transparent; color:var(--teal-dark); }
+    button:focus { outline:3px solid rgba(210,163,79,.55); outline-offset:2px; }
+    button[disabled] { opacity:.45; cursor:not-allowed; }
+    .feedback { display:none; margin-top:16px; padding:14px 16px; border-left:6px solid; border-radius:6px; }
+    .feedback.show { display:block; }
+    .feedback.correct { border-color:var(--correct); background:#e7f3ea; }
+    .feedback.incorrect { border-color:var(--terracotta); background:#fff0eb; }
+    .feedback strong { display:block; margin-bottom:3px; }
+    .feedback p { margin:0; }
+    .completion { text-align:center; padding:12px 0 4px; }
+    .completion-icon { display:grid; place-items:center; width:64px; height:64px; margin:0 auto 12px; border-radius:50%; background:var(--correct); color:#fff; font-size:2rem; }
+    .completion h2 { margin-bottom:8px; }
+    .completion p { max-width:650px; margin:0 auto 18px; }
+    @media (prefers-reduced-motion:reduce) { .panel.active { animation:none; } }
+  </style>
+</head>
+<body>
+  <section class="activity" aria-labelledby="title">
+    <header>
+      <h1 id="title">Leah’s professional decision points</h1>
+      <p>Consider each situation and select the most appropriate response.</p>
+      <div class="progress" aria-label="Activity progress">
+        <span class="step-dot active" id="dot1" aria-label="Decision point 1">1</span>
+        <span class="line"></span>
+        <span class="step-dot" id="dot2" aria-label="Decision point 2">2</span>
+        <span class="line"></span>
+        <span class="step-dot" id="dot3" aria-label="Completion">✓</span>
+      </div>
+    </header>
+    <main>
+      <section class="panel active" id="panel1" aria-labelledby="q1">
+        <p class="eyebrow">Decision point 1</p>
+        <h2 id="q1">What should Leah do before accepting the position?</h2>
+        <fieldset data-answer="B">
+          <legend>Choose one response</legend>
+          <label class="option"><input type="radio" name="q1" value="A"><span><span class="letter">A.</span> Accept immediately and work out the details after starting.</span></label>
+          <label class="option"><input type="radio" name="q1" value="B"><span><span class="letter">B.</span> Ask about induction, role expectations, workload, supervision and support for beginning practitioners.</span></label>
+          <label class="option"><input type="radio" name="q1" value="C"><span><span class="letter">C.</span> Decline because she has not worked with this client group before.</span></label>
+          <label class="option"><input type="radio" name="q1" value="D"><span><span class="letter">D.</span> Assume that line management and professional supervision are the same.</span></label>
+        </fieldset>
+        <div class="feedback" id="feedback1" role="status" aria-live="polite"></div>
+        <div class="actions"><button class="primary check" data-step="1" type="button">Check response</button><button class="primary next" data-next="2" type="button" hidden>Continue</button></div>
+      </section>
+
+      <section class="panel" id="panel2" aria-labelledby="q2">
+        <p class="eyebrow">Decision point 2</p>
+        <h2 id="q2">Leah learns that formal social work supervision is not currently provided. What is the most appropriate next step?</h2>
+        <fieldset data-answer="C">
+          <legend>Choose one response</legend>
+          <label class="option"><input type="radio" name="q2" value="A"><span><span class="letter">A.</span> Proceed without supervision because she has completed her degree.</span></label>
+          <label class="option"><input type="radio" name="q2" value="B"><span><span class="letter">B.</span> Arrange informal conversations with any available colleague and treat them as formal supervision.</span></label>
+          <label class="option"><input type="radio" name="q2" value="C"><span><span class="letter">C.</span> Clarify whether appropriately qualified internal or external supervision can be arranged and how it will be supported.</span></label>
+          <label class="option"><input type="radio" name="q2" value="D"><span><span class="letter">D.</span> Use friends from university as supervisors.</span></label>
+        </fieldset>
+        <div class="feedback" id="feedback2" role="status" aria-live="polite"></div>
+        <div class="actions"><button class="primary check" data-step="2" type="button">Check response</button><button class="primary next" data-next="3" type="button" hidden>Complete activity</button></div>
+      </section>
+
+      <section class="panel completion" id="panel3" aria-labelledby="complete-title">
+        <div class="completion-icon" aria-hidden="true">✓</div>
+        <h2 id="complete-title">Activity complete</h2>
+        <p>Leah should clarify expectations and ensure that appropriately qualified professional supervision can be arranged before accepting the position.</p>
+        <button class="secondary" id="restart" type="button">Restart activity</button>
+      </section>
+    </main>
+  </section>
+  <script>
+    const explanations = {
+      1: 'Asking about support and expectations is part of responsible professional decision-making. It does not indicate a lack of confidence.',
+      2: 'The AASW Practice Standards 2023 identify regular structured supervision from a social work-qualified supervisor as central to strengthening practice. Supervision should include professional growth, critical analysis, support and accountability.'
+    };
+
+    function showPanel(number) {
+      document.querySelectorAll('.panel').forEach(panel => panel.classList.remove('active'));
+      document.getElementById(`panel${number}`).classList.add('active');
+      for (let i = 1; i <= 3; i++) {
+        const dot = document.getElementById(`dot${i}`);
+        dot.classList.toggle('active', i === number);
+        dot.classList.toggle('done', i < number);
+      }
+      document.getElementById(`panel${number}`).focus?.();
+    }
+
+    document.querySelectorAll('.check').forEach(button => {
+      button.addEventListener('click', () => {
+        const step = Number(button.dataset.step);
+        const panel = document.getElementById(`panel${step}`);
+        const fieldset = panel.querySelector('fieldset');
+        const selected = fieldset.querySelector('input:checked');
+        const feedback = document.getElementById(`feedback${step}`);
+        fieldset.querySelectorAll('.option').forEach(option => option.classList.remove('correct','incorrect'));
+
+        if (!selected) {
+          feedback.className = 'feedback incorrect show';
+          feedback.innerHTML = '<strong>Select a response.</strong><p>Choose one option before checking your response.</p>';
+          return;
+        }
+
+        const correct = selected.value === fieldset.dataset.answer;
+        selected.closest('.option').classList.add(correct ? 'correct' : 'incorrect');
+        feedback.className = `feedback ${correct ? 'correct' : 'incorrect'} show`;
+        feedback.innerHTML = correct
+          ? `<strong>Correct. Best response: ${fieldset.dataset.answer}</strong><p>${explanations[step]}</p>`
+          : `<strong>Not quite. Try again.</strong><p>Consider Leah’s professional responsibilities and the support needed for safe, accountable practice.</p>`;
+        panel.querySelector('.next').hidden = !correct;
+      });
+    });
+
+    document.querySelectorAll('.next').forEach(button => button.addEventListener('click', () => showPanel(Number(button.dataset.next))));
+    document.querySelectorAll('input').forEach(input => input.addEventListener('change', () => {
+      const panel = input.closest('.panel');
+      panel.querySelectorAll('.option').forEach(option => option.classList.remove('correct','incorrect'));
+      panel.querySelector('.feedback').className = 'feedback';
+    }));
+
+    document.getElementById('restart').addEventListener('click', () => {
+      document.querySelectorAll('input').forEach(input => { input.checked = false; });
+      document.querySelectorAll('.option').forEach(option => option.classList.remove('correct','incorrect'));
+      document.querySelectorAll('.feedback').forEach(feedback => { feedback.className = 'feedback'; feedback.innerHTML = ''; });
+      document.querySelectorAll('.next').forEach(button => { button.hidden = true; });
+      showPanel(1);
+      document.querySelector('#panel1 input').focus();
+    });
+  </script>
+</body>
+</html>
